@@ -81,10 +81,6 @@ static public function traceClick($target) {
 }
 ```
 
-To add the tests to the fatfree-dev testing bench:
+### Testing
 
-```php
-// Mailer Tests
-$f3->concat('AUTOLOAD',',sugar/Mailer/lib/,sugar/Mailer/test/');
-\MailTest::init();
-```
+These is a test bench available here: https://github.com/ikkez/f3-mailer/tree/test
