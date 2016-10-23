@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<base href="{{ @SCHEME.'://'.@HOST.(!@PORT||@PORT==80||@PORT==443?'':':'.@PORT).@BASE.'/'.@UI }}" />
+
+		<meta charset="{{ @ENCODING}}" />
+		<title>{{ @VERSION }}: {{ @active }}</title>
+		<link rel="stylesheet" type="text/css" href="css/theme.css" />
+		<style>
+			{~ if (@ERROR): ~}
+				{{ file_get_contents('lib/code.css') }}
+			{~ endif ~}
+			.alert {
+				padding: 15px;
+				background-color: #a0c8ab;
+				margin-bottom: 30px;
+			}
+			.form-control {
+				margin-bottom: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="row">
+			<div class="sidebar">
+				<h1>{{ @VERSION }}</h1>
+				<ul>
+					{~ foreach (@menu as @url=>@desc): ~}
+					<li>{~ if (@active==@desc): ~}{{ @desc }}{~ else: ~}<a href="{{ @BASE.@url }}">{{ @desc }}</a>{~ endif ~}</li>
+					{~ endforeach ~}
+				</ul>
+			</div>
+			<div class="main">
+				<h1>{{ @active }}</h1>
+
+				{~ if(@@mailer_send): ~}
+				<div class="alert">
+					Mail was send
+				</div>
+				{~endif ~}
+				<form action="{{ @PATH }}" method="post">
+					<div class="form-control">
+						<label>E-Mail
+							<input type="email" name="email" required value="{{@@POST.email}}">
+						</label>
+					</div>
+					<div class="form-control">
+						<label>
+							<input type="radio" name="type" value="1" checked>
+							Plain Text mail
+						</label>
+					</div>
+					<div class="form-control">
+						<label>
+							<input type="radio" name="type" value="2">
+							HTML mail
+						</label>
+					</div>
+					<div class="form-control">
+						<label>
+							<input type="radio" name="type" value="3">
+							Hybrid mail (plain text + html)
+						</label>
+					</div>
+					<div class="form-control">
+						<label>
+							<input type="checkbox" name="attachment">
+							Add attachment
+						</label>
+					</div>
+					<div class="form-control">
+						<label>
+							<input type="checkbox" name="save">
+							Save mail
+						</label>
+					</div>
+					<button type="submit">send mail</button>
+
+				</form>
+
+				<p><a href="http://fatfree.sf.net/"><img src="images/powered.png" title="Fat-Free Framework" /></a><br />
+				<p class="stats">{{ 'Page rendered in {0} msecs / Memory usage {1} Kibytes',round(1e3*(microtime(TRUE)-$TIME),2),round(memory_get_usage(TRUE)/1e3,1) | format }}</p>
+			</div>
+		</div>
+	</body>
+</html>

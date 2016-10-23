@@ -1,0 +1,5 @@
+F3 Sugar Mailer
+
+Welcome.
+
+This is a simple test mail, send with F3 sugar mailer.
