@@ -38,7 +38,7 @@
 					Mail was send
 				</div>
 				{~endif ~}
-				<form action="{{ @PATH }}" method="post">
+				<form action="{{ @BASE.@PATH }}" method="post">
 					<div class="form-control">
 						<label>E-Mail
 							<input type="email" name="email" required value="{{@@POST.email}}">

@@ -12,14 +12,14 @@ class MailTest extends \App\Controller {
 		\Mailer::initTracking();
 	}
 
-	function view($f3) {
-		$ui_path = __DIR__.'/ui/';
-		$f3->UI = ltrim(substr($ui_path,strlen($f3->ROOT)),'/');
+	function view(\Base $f3) {
+		$ui_path = $f3->fixslashes(__DIR__.'/ui/');
+		$f3->UI = ltrim(substr($ui_path,strlen($f3->ROOT.$f3->BASE)),'/');
 	}
 
-	function send($f3) {
+	function send(\Base $f3) {
 		$email = $f3->get('POST.email');
-		$ui_base = ltrim(substr(__DIR__.'/',strlen($f3->ROOT)),'/');
+		$ui_base = ltrim(substr($f3->fixslashes(__DIR__).'/',strlen($f3->ROOT.$f3->BASE)),'/');
 		$f3->UI = $ui_base.'email/';
 
 		$mail = new \Mailer('UTF-8');
