@@ -3,12 +3,16 @@
 This is a little mail plugin that contains:
 
   - SMTP plugin wrapper
-  - easily send plain text, html or both text & html mixed content mails
+  - easily send plain text, html or both text & html hybrid content mails
   - convenient methods to add one or multiple recipients 
   - encode special chars for mails with ISO charset
   - ping and jump methods for tracking read and click events in your html mails
+  - save mails as files to disk
 
-Configurable via config file:
+
+## Getting started
+
+This plugin is configurable via [config file](https://github.com/ikkez/f3-mailer/blob/master/mailer_config.sample.ini):
 
 ```ini
 [mailer]
@@ -81,6 +85,6 @@ static public function traceClick($target) {
 }
 ```
 
-### Testing
+## Demo & Testing
 
-These is a test bench available here: https://github.com/ikkez/f3-mailer/tree/test
+There's a test bench available here: https://github.com/ikkez/f3-mailer/tree/test
