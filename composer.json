@@ -1,0 +1,10 @@
+{
+    "name": "ikkez/f3-mailer",
+    "description": "SMTP plugin wrapper for PHP Fat-Free Framework",
+    "keywords": ["F3","fatfree","smtp","mail","email"],
+    "homepage": "https://github.com/ikkez/f3-mailer",
+    "license": "GPL-3.0",
+    "autoload": {
+        "classmap": ["./"]
+    }
+}
