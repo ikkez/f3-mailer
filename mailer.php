@@ -11,7 +11,7 @@
  * (c) Christian Knuth, ikkez0n3@gmail.com
  *
  * @date: 23.10.2016
- * @version 1.0.0
+ * @version 1.0.1-dev
  */
 
 class Mailer {
@@ -217,10 +217,10 @@ class Mailer {
 			$body .= $this->message['html'].$eol;
 		} elseif (isset($this->message['text'])) {
 			$this->smtp->set('Content-Type', 'text/plain; charset='.$this->charset);
-			$body = $this->message['text'];
+			$body = $this->message['text'].$eol;
 		} elseif (isset($this->message['html'])) {
 			$this->smtp->set('Content-Type', 'text/html; charset='.$this->charset);
-			$body = $this->message['html'];
+			$body = $this->message['html'].$eol;
 		}
 		$success = $this->smtp->send($this->encode($body),true,$mock);
 		$f3 = \Base::instance();
