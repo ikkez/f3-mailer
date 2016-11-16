@@ -235,8 +235,12 @@ class Mailer {
 	public function save($filename) {
 		$f3 = \Base::instance();
 		preg_match('/^354.*?$\s(.*?)\.?\s^250.*?$\s^QUIT/ms',$this->smtp->log(),$matches);
-		if (isset($matches[1]))
-			$f3->write($f3->get('mailer.storage_path').$filename,$matches[1]);
+		if (isset($matches[1])) {
+			$path = $f3->get('mailer.storage_path');
+			if (!is_dir($path))
+				mkdir($path,0777,true);
+			$f3->write($path.$filename,$matches[1]);
+		}
 	}
 
 	/**
