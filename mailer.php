@@ -236,15 +236,28 @@ class Mailer {
 
 	/**
 	 * save the send mail to disk
+	 * @param $filename
 	 */
 	public function save($filename) {
 		$f3 = \Base::instance();
-		preg_match('/^354.*?$\s(.*?)\.?\s^250.*?$\s^QUIT/ms',$this->smtp->log(),$matches);
-		if (isset($matches[1])) {
+		$lines = explode("\n",$this->smtp->log());
+		$start = false;
+		$out = '';
+		for($i=0,$max=count($lines);$i<$max;$i++) {
+			if (!$start && preg_match('/^354.*?$/',$lines[$i],$matches)) {
+				$start=true;
+				continue;
+			} elseif (preg_match('/^250.*?$\s^QUIT/m',
+				$lines[$i].($i+1 < $max ? "\n".$lines[$i+1] : ''),$matches))
+				break;
+			if ($start)
+				$out.=$lines[$i]."\n";
+		}
+		if ($out) {
 			$path = $f3->get('mailer.storage_path');
 			if (!is_dir($path))
 				mkdir($path,0777,true);
-			$f3->write($path.$filename,$matches[1]);
+			$f3->write($path.$filename,$out);
 		}
 	}
 
