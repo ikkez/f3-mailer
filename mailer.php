@@ -39,7 +39,7 @@ class Mailer {
 	/**
 	 * initialize SMTP plugin
 	 */
-	protected function initSMTP() {
+	public function initSMTP() {
 		/** @var \Base $f3 */
 		$f3 = \Base::instance();
 		$this->smtp = new \SMTP(
