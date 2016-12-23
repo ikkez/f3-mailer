@@ -31,16 +31,23 @@ class Mailer {
 	 * @param string $enforceCharset
 	 */
 	public function __construct($enforceCharset='ISO-8859-15') {
+		$this->charset = $enforceCharset;
+		$this->recipients = array();
+		$this->initSMTP();
+	}
+
+	/**
+	 * initialize SMTP plugin
+	 */
+	protected function initSMTP() {
 		/** @var \Base $f3 */
 		$f3 = \Base::instance();
-		$this->charset = $enforceCharset;
 		$this->smtp = new \SMTP(
 			$f3->get('mailer.smtp.host'),
 			$f3->get('mailer.smtp.port'),
 			$f3->get('mailer.smtp.scheme'),
 			$f3->get('mailer.smtp.user'),
 			$f3->get('mailer.smtp.pw'));
-		$this->recipients = array();
 		if ($f3->exists('mailer.errors_to',$errors_to) && !empty($errors_to))
 			$this->smtp->set('Errors-to', '<'.$errors_to.'>');
 		if ($f3->exists('mailer.return_to',$return_to) && !empty($return_to))
@@ -124,7 +131,7 @@ class Mailer {
 	}
 
 	/**
-	 * reset recipients
+	 * reset recipients if key was given, or restart whole smtp plugin
 	 * @param null $key
 	 */
 	public function reset($key=null) {
@@ -135,9 +142,7 @@ class Mailer {
 				unset($this->recipients[$key]);
 		} else {
 			$this->recipients = array();
-			$this->smtp->clear('To');
-			$this->smtp->clear('Cc');
-			$this->smtp->clear('Bcc');
+			$this->initSMTP();
 		}
 	}
 
@@ -241,6 +246,14 @@ class Mailer {
 				mkdir($path,0777,true);
 			$f3->write($path.$filename,$matches[1]);
 		}
+	}
+
+	/**
+	 * expose smtp log
+	 * @return mixed
+	 */
+	public function log() {
+		return $this->smtp->log();
 	}
 
 	/**
