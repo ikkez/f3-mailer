@@ -12,8 +12,13 @@
 			{~ endif ~}
 			.alert {
 				padding: 15px;
-				background-color: #a0c8ab;
 				margin-bottom: 30px;
+			}
+			.alert.success {
+				background-color: #a0c8ab;
+			}
+			.alert.fail {
+				background-color: #c86f7a;
 			}
 			.form-control {
 				margin-bottom: 10px;
@@ -34,9 +39,15 @@
 				<h1>{{ @active }}</h1>
 
 				{~ if(@@mailer_send): ~}
-				<div class="alert">
-					Mail was send
-				</div>
+					{~ if(@@mailer_success): ~}
+					<div class="alert success">
+						Mail was send
+					</div>
+					{~else: ~}
+					<div class="alert fail">
+						Error sending mail
+					</div>
+					{~endif ~}
 				{~endif ~}
 				<form action="{{ @BASE.@PATH }}" method="post">
 					<div class="form-control">
