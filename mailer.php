@@ -10,8 +10,8 @@
  *
  * (c) Christian Knuth, ikkez0n3@gmail.com
  *
- * @date: 23.10.2016
- * @version 1.0.1-dev
+ * @date: 23.04.2017
+ * @version 1.0.1
  */
 
 class Mailer {
