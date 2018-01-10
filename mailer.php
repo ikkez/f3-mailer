@@ -8,10 +8,12 @@
  * compliance with the license. Any of the license terms and conditions
  * can be waived if you get permission from the copyright holder.
  *
- * (c) Christian Knuth, ikkez0n3@gmail.com
+ * Copyright (c) 2018 ~ ikkez
+ * Christian Knuth <ikkez0n3@gmail.com>
+ * https://github.com/ikkez/F3-Sugar/
  *
- * @date: 23.04.2017
- * @version 1.0.1
+ * @version 1.0.2
+ * @date: 10.01.2018
  */
 
 class Mailer {
@@ -227,7 +229,7 @@ class Mailer {
 			$this->smtp->set('Content-Type', 'text/html; charset='.$this->charset);
 			$body = $this->message['html'].$eol;
 		}
-		$success = $this->smtp->send($this->encode($body),true,$mock);
+		$success = $this->smtp->send($this->encode($body),'verbose',$mock);
 		$f3 = \Base::instance();
 		if (!$success && $f3->exists('mailer.on.failure',$fail_handler))
 			$f3->call($fail_handler,array($this,$this->smtp->log()));
