@@ -3,7 +3,7 @@
 
 ### Test Bench
 
-![Image](https://dl.dropboxusercontent.com/u/3077539/_linked/sugar_mailer.png)
+![Image](https://ikkez.de/linked/sugar_mailer.png)
 
 To add the tests to the fatfree-dev testing bench:
 
