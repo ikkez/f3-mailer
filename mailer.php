@@ -12,8 +12,8 @@
  * Christian Knuth <ikkez0n3@gmail.com>
  * https://github.com/ikkez/F3-Sugar/
  *
- * @version 1.0.2
- * @date: 10.01.2018
+ * @version 1.0.3
+ * @date: 21.09.2018
  */
 
 class Mailer {
@@ -201,9 +201,10 @@ class Mailer {
 	 * send message
 	 * @param $subject
 	 * @param bool $mock
+	 * @param bool|string $log log level [false,true,'verbose']
 	 * @return bool
 	 */
-	public function send($subject,$mock=false) {
+	public function send($subject,$mock=false,$log='verbose') {
 		foreach ($this->recipients as $key => $rcpts) {
 			$mails = array();
 			foreach ($rcpts as $mail=>$title)
@@ -229,7 +230,7 @@ class Mailer {
 			$this->smtp->set('Content-Type', 'text/html; charset='.$this->charset);
 			$body = $this->message['html'].$eol;
 		}
-		$success = $this->smtp->send($this->encode($body),'verbose',$mock);
+		$success = $this->smtp->send($this->encode($body),$log,$mock);
 		$f3 = \Base::instance();
 		if (!$success && $f3->exists('mailer.on.failure',$fail_handler))
 			$f3->call($fail_handler,array($this,$this->smtp->log()));
