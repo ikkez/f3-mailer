@@ -131,6 +131,15 @@ class Mailer {
 	public function addBcc($email, $title=null) {
 		$this->recipients['Bcc'][$email] = $title;
 	}
+	
+        /**
+         * set reply-to field respected by most email clients
+         * @param $email
+         * @param null $title
+         */
+        public function setReply($email, $title=null) {
+                $this->set('Reply-To', $this->buildMail($email,$title));
+        }
 
 	/**
 	 * reset recipients if key was given, or restart whole smtp plugin
