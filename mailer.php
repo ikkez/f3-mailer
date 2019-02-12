@@ -8,12 +8,12 @@
  * compliance with the license. Any of the license terms and conditions
  * can be waived if you get permission from the copyright holder.
  *
- * Copyright (c) 2018 ~ ikkez
+ * Copyright (c) 2019 ~ ikkez
  * Christian Knuth <ikkez0n3@gmail.com>
  * https://github.com/ikkez/F3-Sugar/
  *
- * @version 1.0.3
- * @date: 21.09.2018
+ * @version 1.0.4
+ * @date: 12.02.2019
  */
 
 class Mailer {
@@ -50,12 +50,15 @@ class Mailer {
 			$f3->get('mailer.smtp.scheme'),
 			$f3->get('mailer.smtp.user'),
 			$f3->get('mailer.smtp.pw'));
-		if ($f3->exists('mailer.errors_to',$errors_to) && !empty($errors_to))
-			$this->smtp->set('Errors-to', '<'.$errors_to.'>');
-		if ($f3->exists('mailer.return_to',$return_to) && !empty($return_to))
-			$this->smtp->set('Return-Path', '<'.$return_to.'>');
-		if ($f3->exists('mailer.from_mail',$from_mail) && !empty($from_mail)) {
-			$from_name = !$f3->devoid('mailer.from_name') ? $f3->get('mailer.from_name') : null;
+		if (!$f3->devoid('mailer.errors_to',$errors_to))
+			$this->setErrors($errors_to);
+		if (!$f3->devoid('mailer.return_to',$return_to))
+			$this->setReturn($return_to);
+		if (!$f3->devoid('mailer.reply_to',$reply_to))
+			$this->setReply($reply_to);
+		if (!$f3->devoid('mailer.from_mail',$from_mail)) {
+			if ($f3->devoid('mailer.from_name',$from_name))
+				$from_name = NULL;
 			$this->setFrom($from_mail, $from_name);
 		}
 	}
@@ -132,14 +135,32 @@ class Mailer {
 		$this->recipients['Bcc'][$email] = $title;
 	}
 	
-        /**
-         * set reply-to field respected by most email clients
-         * @param $email
-         * @param null $title
-         */
-        public function setReply($email, $title=null) {
-                $this->set('Reply-To', $this->buildMail($email,$title));
-        }
+	/**
+	 * set reply-to field respected by most email clients
+	 * @param $email
+	 * @param null $title
+	 */
+	public function setReply($email, $title=null) {
+		$this->set('Reply-To', $this->buildMail($email,$title));
+	}
+
+	/**
+	 * set Errors-to field
+	 * @param $email
+	 * @param null $title
+	 */
+	public function setErrors($email, $title=null) {
+		$this->set('Errors-to', $this->buildMail($email,$title));
+	}
+
+	/**
+	 * set Return-Path field
+	 * @param $email
+	 * @param null $title
+	 */
+	public function setReturn($email, $title=null) {
+		$this->set('Return-Path', $this->buildMail($email,$title));
+	}
 
 	/**
 	 * reset recipients if key was given, or restart whole smtp plugin
