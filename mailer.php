@@ -286,7 +286,7 @@ class Mailer {
 	 * @param Base $f3
 	 * @param $params
 	 */
-	public function ping(\Base $f3, $params) {
+	static public function ping(\Base $f3, $params) {
 		$hash = $params['hash'];
 		// trigger ping event
 		if ($f3->exists('mailer.on.ping',$ping_handler))
@@ -303,7 +303,7 @@ class Mailer {
 	 * track clicked link and reroute
 	 * @param Base $f3
 	 */
-	public function jump(\Base $f3, $params) {
+	static public function jump(\Base $f3, $params) {
 		$target = $f3->get('GET.target');
 		// trigger jump event
 		if ($f3->exists('mailer.on.jump',$jump_handler))
@@ -319,11 +319,11 @@ class Mailer {
 		$f3 = \Base::instance();
 		if (!$f3->exists('mailer.ping_route',$ping_route))
 			$ping_route = '/mailer-ping/@hash.png';
-		$f3->route('GET '.$ping_route,'\Mailer->ping');
+		$f3->route('GET '.$ping_route,'\Mailer::ping');
 
 		if (!$f3->exists('mailer.jump_route',$jump_route))
 			$jump_route = '/mailer-jump';
-		$f3->route('GET '.$jump_route,'\Mailer->jump');
+		$f3->route('GET '.$jump_route,'\Mailer::jump');
 	}
 
 }
