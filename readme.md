@@ -29,6 +29,7 @@ from_mail = info@domain.com
 from_name = Mario Bros.
 errors_to = errors@domain.com
 return_to = bounce@domain.com
+reply_to = answer@domain.com
 on.failure = \Controller\Mail::logError
 on.ping = \Controller\Mail::traceMail
 on.jump = \Controller\Mail::traceClick
@@ -38,15 +39,8 @@ jumplinks = true
 storage_path = logs/mail/
 ```
 
-To initialize the tracking routes, call this before `$f3->run()`:
 
-```php
-$f3->config('mailer_config.ini');
-// ...
-Mailer::initTracking();
-// ...
-$f3->run();
-```
+## Usage
 
 A little sample looks like this:
 
@@ -60,7 +54,27 @@ function send_test($email, $title=null) {
 }
 ```
 
-To add the ping tracking image, put this in your html mail body:
+If you want, you can change the encoding type that is used for the email body and header when instantiating the mail object with a constructor argument:
+
+```php
+$mail = new \Mailer('ISO-8859-1');
+$mail = new \Mailer('ISO-8859-15'); // default
+$mail = new \Mailer('UTF-8'); 
+```
+
+## Tracking 
+
+To initialize the tracking routes, call this before `$f3->run()`:
+
+```php
+$f3->config('mailer_config.ini');
+// ...
+Mailer::initTracking();
+// ...
+$f3->run();
+```
+
+To add the ping tracking pixel (1x1 transparent 8bit PNG), put this in your html mail body:
 
 ```html
 <img src="http://mydomain.com/mailer-ping/AH2cjDWb.png" />
@@ -85,6 +99,46 @@ static public function traceClick($target) {
 }
 ```
 
+## Mock & Storage
+
+In case you don't want to actually send the email, but just want to run a test flight and save the mail in a text file, you can mock the server dialog:
+
+```php
+$mail->send($subject, TRUE); // mock call 
+$mail->save('newsletter.eml'); // save to file in 'mailer.storage_path' directory
+$mail->reset();
+```
+
+If you want to keep using the object after a mock call, you need to reset the mailer and add recipients, content and attachments again.
+
+The mail file includes all file attachments.
+
+## Logging
+
+You can log the full SMTP server dialog after sending the email. This could be useful for debugging purposes or as a sending confirmation. 
+
+```php
+$success = $mailer->send($subject);
+$f3->write('SMTP_mail.log', $this->mailer->log());
+```
+
+**Notice:** By default, the log level is `verbose`, which means it also contains the mail body and attachments, which might eat up a lot of memory.
+To reduce the log level, set `$log` to `TRUE` (dialog only) or `FALSE` (disabled) in:
+
+```php
+$mailer->send($subject, $mock, $log);
+```
+
+Keep in mind that when you write down mails to files, it can only store what was found in the SMTP log, hence it only works when logging level is `verbose`.
+
 ## Demo & Testing
 
 There's a test bench available here: https://github.com/ikkez/f3-mailer/tree/test
+
+
+
+## License
+
+You are allowed to use this plugin under the terms of the GNU General Public License version 3 or later.
+
+Copyright (C) 2019 Christian Knuth [ikkez]
