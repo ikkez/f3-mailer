@@ -34,8 +34,7 @@ class Mailer {
 	 */
 	public function __construct($enforceCharset='ISO-8859-15') {
 		$this->charset = $enforceCharset;
-		$this->recipients = array();
-		$this->initSMTP();
+		$this->reset();
 	}
 
 	/**
