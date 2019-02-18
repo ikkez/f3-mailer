@@ -247,17 +247,17 @@ class Mailer {
 		if (isset($this->message['text']) && isset($this->message['html'])) {
 			$this->smtp->set('Content-Type', 'multipart/alternative; boundary="'.$hash.'"');
 			$body .= '--'.$hash.$eol;
-			$body .= 'Content-Type: text/plain; encoding='.$this->charset.$eol.$eol;
+			$body .= 'Content-Type: text/plain; charset='.$this->charset.$eol.$eol;
 			$body .= $this->message['text'].$eol.$eol;
 			$body .= '--'.$hash.$eol;
-			$body .= 'Content-Type: text/html; encoding='.$this->charset.$eol.$eol;
+			$body .= 'Content-Type: text/html; charset='.$this->charset.$eol.$eol;
 			$body .= $this->message['html'].$eol.$eol;
 			$body .= '--'.$hash.'--'.$eol;
 		} elseif (isset($this->message['text'])) {
-			$this->smtp->set('Content-Type', 'text/plain; encoding='.$this->charset);
+			$this->smtp->set('Content-Type', 'text/plain; charset='.$this->charset);
 			$body = $this->message['text'].$eol;
 		} elseif (isset($this->message['html'])) {
-			$this->smtp->set('Content-Type', 'text/html; encoding='.$this->charset);
+			$this->smtp->set('Content-Type', 'text/html; charset='.$this->charset);
 			$body = $this->message['html'].$eol;
 		}
 		$success = $this->smtp->send($this->encode($body),$log,$mock);
