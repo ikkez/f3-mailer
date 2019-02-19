@@ -247,11 +247,12 @@ class Mailer {
 		if (isset($this->message['text']) && isset($this->message['html'])) {
 			$this->smtp->set('Content-Type', 'multipart/alternative; boundary="'.$hash.'"');
 			$body .= '--'.$hash.$eol;
-			$body .= 'Content-Type: text/plain; charset='.$this->charset.$eol;
+			$body .= 'Content-Type: text/plain; charset='.$this->charset.$eol.$eol;
 			$body .= $this->message['text'].$eol.$eol;
 			$body .= '--'.$hash.$eol;
 			$body .= 'Content-Type: text/html; charset='.$this->charset.$eol.$eol;
-			$body .= $this->message['html'].$eol;
+			$body .= $this->message['html'].$eol.$eol;
+			$body .= '--'.$hash.'--'.$eol;
 		} elseif (isset($this->message['text'])) {
 			$this->smtp->set('Content-Type', 'text/plain; charset='.$this->charset);
 			$body = $this->message['text'].$eol;
