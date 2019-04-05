@@ -25,13 +25,18 @@ smtp.pw = 123456789!
 smtp.scheme =
 
 ; optional mail settings
-from_mail = info@domain.com
+from_mail = noreply@domain.com
 from_name = Mario Bros.
-errors_to = errors@domain.com
-return_to = bounce@domain.com
-reply_to = answer@domain.com
+; mail to receive bounced mails
+errors_to = bounce@domain.com
+; used mail for replies to the sent mail
+reply_to = info@domain.com
+
+; handler for SMTP errors
 on.failure = \Controller\Mail::logError
+; handler for tracing opened mails
 on.ping = \Controller\Mail::traceMail
+; handler for redirecting jump links
 on.jump = \Controller\Mail::traceClick
 ; automatically create jump links in all <a> tags
 jumplinks = true

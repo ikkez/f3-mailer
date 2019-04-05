@@ -12,8 +12,8 @@
  * Christian Knuth <ikkez0n3@gmail.com>
  * https://github.com/ikkez/F3-Sugar/
  *
- * @version 1.0.4
- * @date: 12.02.2019
+ * @version 1.1.0
+ * @date: 05.04.2019
  */
 
 class Mailer {
@@ -51,8 +51,6 @@ class Mailer {
 			$f3->get('mailer.smtp.pw'));
 		if (!$f3->devoid('mailer.errors_to',$errors_to))
 			$this->setErrors($errors_to);
-		if (!$f3->devoid('mailer.return_to',$return_to))
-			$this->setReturn($return_to);
 		if (!$f3->devoid('mailer.reply_to',$reply_to))
 			$this->setReply($reply_to);
 		if (!$f3->devoid('mailer.from_mail',$from_mail)) {
@@ -144,21 +142,12 @@ class Mailer {
 	}
 
 	/**
-	 * set Errors-to field
+	 * set receipient for bounce error mails
 	 * @param $email
 	 * @param null $title
 	 */
 	public function setErrors($email, $title=null) {
-		$this->set('Errors-to', $this->buildMail($email,$title));
-	}
-
-	/**
-	 * set Return-Path field
-	 * @param $email
-	 * @param null $title
-	 */
-	public function setReturn($email, $title=null) {
-		$this->set('Return-Path', $this->buildMail($email,$title));
+		$this->set('Sender', $this->buildMail($email,$title));
 	}
 
 	/**
