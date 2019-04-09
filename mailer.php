@@ -12,7 +12,7 @@
  * Christian Knuth <ikkez0n3@gmail.com>
  * https://github.com/ikkez/F3-Sugar/
  *
- * @version 1.1.1
+ * @version 1.2.0
  * @date: 09.04.2019
  */
 
@@ -23,6 +23,8 @@ class Mailer {
 		$recipients,
 		$message,
 		$charset;
+
+	static $EOL="\r\n";
 
 	/**
 	 * create mailer instance working with a specific charset
@@ -99,7 +101,7 @@ class Mailer {
 			} while (strlen($chunk) > $length);
 			$out[] = $chunk;
 		}
-		$out = implode(PHP_EOL,$out);
+		$out = implode(static::$EOL,$out);
 		return preg_replace('/^(.*)$/m', ' =?'.$this->charset."?B?\\1?=", $out);
 	}
 
@@ -197,7 +199,7 @@ class Mailer {
 	 * @param $message
 	 */
 	public function setText($message) {
-		$this->message['text'] = $message;
+		$this->setContent($message,'text/plain');
 	}
 
 	/**
@@ -228,7 +230,22 @@ class Mailer {
 				return '<a'.$params.'>'.$tmpl->build($node).'</a>';
 			});
 		$message = $tmpl->build($tmpl->parse($message));
-		$this->message['html'] = $message;
+		$this->setContent($message,'text/html');
+	}
+
+	/**
+	 * set message contents by mime type
+	 * @param string $data message data
+	 * @param string $mime the mime type
+	 * @param null $charset
+	 */
+	public function setContent($data, $mime, $charset=NULL) {
+		if (!$charset)
+			$charset=$this->charset;
+		$this->message[$mime] = [
+			'content'=>$data,
+			'type'=>$mime.'; '.$charset
+		];
 	}
 
 	/**
@@ -258,23 +275,20 @@ class Mailer {
 		$this->smtp->set('Subject', $this->encodeHeader($this->encode($subject)));
 		$body = '';
 		$hash=uniqid(NULL,TRUE);
-		$eol="\r\n";
-		if (isset($this->message['text']) && isset($this->message['html'])) {
+		$multipart = count($this->message) > 1;
+		if ($multipart)
 			$this->smtp->set('Content-Type', 'multipart/alternative; boundary="'.$hash.'"');
-			$body .= '--'.$hash.$eol;
-			$body .= 'Content-Type: text/plain; charset='.$this->charset.$eol.$eol;
-			$body .= $this->message['text'].$eol.$eol;
-			$body .= '--'.$hash.$eol;
-			$body .= 'Content-Type: text/html; charset='.$this->charset.$eol.$eol;
-			$body .= $this->message['html'].$eol.$eol;
-			$body .= '--'.$hash.'--'.$eol;
-		} elseif (isset($this->message['text'])) {
-			$this->smtp->set('Content-Type', 'text/plain; charset='.$this->charset);
-			$body = $this->message['text'].$eol;
-		} elseif (isset($this->message['html'])) {
-			$this->smtp->set('Content-Type', 'text/html; charset='.$this->charset);
-			$body = $this->message['html'].$eol;
+		$i=0;
+		foreach ($this->message as $msg) {
+			if ($multipart) {
+				$body .= '--'.$hash.static::$EOL;
+				$body .= 'Content-Type: '.$msg['type'].static::$EOL.static::$EOL;
+			} else
+				$this->smtp->set('Content-Type', $msg['type']);
+			$body .= $msg['content'].static::$EOL.static::$EOL;
 		}
+		if ($multipart)
+			$body .= '--'.$hash.'--'.static::$EOL;
 		$success = $this->smtp->send($this->encode($body),$log,$mock);
 		$f3 = \Base::instance();
 		if (!$success && $f3->exists('mailer.on.failure',$fail_handler))
