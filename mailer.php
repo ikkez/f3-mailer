@@ -12,7 +12,7 @@
  * Christian Knuth <ikkez0n3@gmail.com>
  * https://github.com/ikkez/F3-Sugar/
  *
- * @version 1.2.0
+ * @version 1.2.1
  * @date: 09.04.2019
  */
 
@@ -81,28 +81,20 @@ class Mailer {
 
 	/**
 	 * encode and split header strings
-	 * see https://www.php.net/manual/en/function.mb-encode-mimeheader.php#60283
 	 * @param $str
 	 * @return string
 	 */
 	protected function encodeHeader($str) {
-		$out = [];
-		$utf = \UTF::instance();
-		$mb_length = $utf->strlen($str);
-		$length = 75 - strlen('=?'.$this->charset.'?B?') - strlen('?=');
-		$avgLength = floor($length * ($mb_length / strlen($str)) * .75);
-		for ($i = 0; $i < $mb_length; $i += $offset) {
-			$lookBack = 0;
-			do {
-				$offset = $avgLength - $lookBack;
-				$chunk = $utf->substr($str, $i, $offset);
-				$chunk = base64_encode($chunk);
-				++$lookBack;
-			} while (strlen($chunk) > $length);
-			$out[] = $chunk;
-		}
-		$out = implode(static::$EOL,$out);
-		return preg_replace('/^(.*)$/m', ' =?'.$this->charset."?B?\\1?=", $out);
+		if (extension_loaded('iconv')) {
+			$out = iconv_mime_encode('Subject', $str,
+				['input-charset' => 'UTF-8', 'output-charset' => $this->charset]);
+			$out = substr($out, strlen('Subject: '));
+		} elseif(extension_loaded('mbstring')) {
+			mb_internal_encoding('UTF-8');
+			$out = mb_encode_mimeheader($str, $this->charset, 'B', static::$EOL, strlen('Subject: '));
+		} else
+			$out = wordwrap($str,65,static::$EOL);
+		return $out;
 	}
 
 	/**
