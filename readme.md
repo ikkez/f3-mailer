@@ -62,9 +62,9 @@ function send_test($email, $title=null) {
 If you want, you can change the encoding type that is used for the email body and header when instantiating the mail object with a constructor argument:
 
 ```php
+$mail = new \Mailer('UTF-8'); // default
 $mail = new \Mailer('ISO-8859-1');
-$mail = new \Mailer('ISO-8859-15'); // default
-$mail = new \Mailer('UTF-8'); 
+$mail = new \Mailer('ISO-8859-15');
 ```
 
 ## Tracking 

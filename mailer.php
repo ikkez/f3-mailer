@@ -32,7 +32,7 @@ class Mailer {
 	 *      UTF-8
 	 * @param string $enforceCharset
 	 */
-	public function __construct($enforceCharset='ISO-8859-15') {
+	public function __construct($enforceCharset='UTF-8') {
 		$this->charset = $enforceCharset;
 		$this->reset();
 	}
