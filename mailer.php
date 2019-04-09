@@ -12,8 +12,8 @@
  * Christian Knuth <ikkez0n3@gmail.com>
  * https://github.com/ikkez/F3-Sugar/
  *
- * @version 1.1.0
- * @date: 05.04.2019
+ * @version 1.1.1
+ * @date: 09.04.2019
  */
 
 class Mailer {
@@ -75,6 +75,32 @@ class Mailer {
 				? mb_convert_encoding($str,$this->charset,"UTF-8")
 				: utf8_decode($str);
 		return $out ?: $str;
+	}
+
+	/**
+	 * encode and split header strings
+	 * see https://www.php.net/manual/en/function.mb-encode-mimeheader.php#60283
+	 * @param $str
+	 * @return string
+	 */
+	protected function encodeHeader($str) {
+		$out = [];
+		$utf = \UTF::instance();
+		$mb_length = $utf->strlen($str);
+		$length = 75 - strlen('=?'.$this->charset.'?B?') - strlen('?=');
+		$avgLength = floor($length * ($mb_length / strlen($str)) * .75);
+		for ($i = 0; $i < $mb_length; $i += $offset) {
+			$lookBack = 0;
+			do {
+				$offset = $avgLength - $lookBack;
+				$chunk = $utf->substr($str, $i, $offset);
+				$chunk = base64_encode($chunk);
+				++$lookBack;
+			} while (strlen($chunk) > $length);
+			$out[] = $chunk;
+		}
+		$out = implode(PHP_EOL,$out);
+		return preg_replace('/^(.*)$/m', ' =?'.$this->charset."?B?\\1?=", $out);
 	}
 
 	/**
@@ -229,7 +255,7 @@ class Mailer {
 				$mails[] = $this->buildMail($mail,$title);
 			$this->set($key,implode(', ',$mails));
 		}
-		$this->smtp->set('Subject', $this->encode($subject));
+		$this->smtp->set('Subject', $this->encodeHeader($this->encode($subject)));
 		$body = '';
 		$hash=uniqid(NULL,TRUE);
 		$eol="\r\n";
