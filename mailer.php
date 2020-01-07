@@ -104,7 +104,7 @@ class Mailer {
 	 * @return string
 	 */
 	protected function buildMail($email, $title=null) {
-		return ($title?'"'.$title.'" ':'').'<'.$email.'>';
+		return ($title?'"'.$this->encodeHeader($title).'" ':'').'<'.$email.'>';
 	}
 
 	/**
