@@ -236,7 +236,7 @@ class Mailer {
 			$charset=$this->charset;
 		$this->message[$mime] = [
 			'content'=>$data,
-			'type'=>$mime.'; '.$charset
+			'type'=>$mime.'; charset='.$charset
 		];
 	}
 
@@ -270,7 +270,6 @@ class Mailer {
 		$multipart = count($this->message) > 1;
 		if ($multipart)
 			$this->smtp->set('Content-Type', 'multipart/alternative; boundary="'.$hash.'"');
-		$i=0;
 		foreach ($this->message as $msg) {
 			if ($multipart) {
 				$body .= '--'.$hash.static::$EOL;
