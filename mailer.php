@@ -8,20 +8,22 @@
  * compliance with the license. Any of the license terms and conditions
  * can be waived if you get permission from the copyright holder.
  *
- * Copyright (c) 2019 ~ ikkez
+ * Copyright (c) 2020 ~ ikkez
  * Christian Knuth <ikkez0n3@gmail.com>
  * https://github.com/ikkez/F3-Sugar/
  *
- * @version 1.2.1
- * @date: 09.04.2019
+ * @version 1.2.2
+ * @date: 14.01.2020
  */
 
 class Mailer {
 
+	/** @var SMTP */
+	protected $smtp;
+
 	protected
-		$smtp,
-		$recipients,
-		$message,
+		$recipients =[],
+		$message = [],
 		$charset;
 
 	static $EOL="\r\n";
@@ -181,7 +183,7 @@ class Mailer {
 			if (isset($this->recipients[$key]))
 				unset($this->recipients[$key]);
 		} else {
-			$this->recipients = array();
+			$this->recipients = [];
 			$this->initSMTP();
 		}
 	}
@@ -209,7 +211,7 @@ class Mailer {
 					$attr = $node['@attrib'];
 					unset($node['@attrib']);
 				} else
-					$attr = array();
+					$attr = [];
 				if (isset($attr['href'])) {
 					if (!$f3->exists('mailer.jump_route',$ping_route))
 						$ping_route = '/mailer-jump';
@@ -257,9 +259,9 @@ class Mailer {
 	 * @param bool|string $log log level [false,true,'verbose']
 	 * @return bool
 	 */
-	public function send($subject,$mock=false,$log='verbose') {
+	public function send($subject, $mock=false, $log='verbose') {
 		foreach ($this->recipients as $key => $rcpts) {
-			$mails = array();
+			$mails = [];
 			foreach ($rcpts as $mail=>$title)
 				$mails[] = $this->buildMail($mail,$title);
 			$this->set($key,implode(', ',$mails));
@@ -283,7 +285,7 @@ class Mailer {
 		$success = $this->smtp->send($this->encode($body),$log,$mock);
 		$f3 = \Base::instance();
 		if (!$success && $f3->exists('mailer.on.failure',$fail_handler))
-			$f3->call($fail_handler,array($this,$this->smtp->log()));
+			$f3->call($fail_handler,[$this,$this->smtp->log()]);
 		return $success;
 	}
 
@@ -331,7 +333,7 @@ class Mailer {
 		$hash = $params['hash'];
 		// trigger ping event
 		if ($f3->exists('mailer.on.ping',$ping_handler))
-			$f3->call($ping_handler,array($hash));
+			$f3->call($ping_handler,[$hash]);
 		$img = new \Image();
 		// 1x1 transparent 8bit PNG
 		$img->load(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMA'.
@@ -348,7 +350,7 @@ class Mailer {
 		$target = $f3->get('GET.target');
 		// trigger jump event
 		if ($f3->exists('mailer.on.jump',$jump_handler))
-			$f3->call($jump_handler,array($target,$params));
+			$f3->call($jump_handler,[$target,$params]);
 		$f3->reroute(urldecode($target));
 	}
 

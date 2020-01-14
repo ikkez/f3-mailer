@@ -141,9 +141,114 @@ Keep in mind that when you write down mails to files, it can only store what was
 There's a test bench available here: https://github.com/ikkez/f3-mailer/tree/test
 
 
+## API
+
+### addBcc 
+
+Adds a blind carbon copy recipient.
+
+`addBcc($email, $title=null)`
+
+
+### addCc 
+
+Adds a carbon copy recipient.
+
+`addCc($email, $title=null)`
+
+### addTo 
+
+Adds a direct recipient.
+`addTo($email, $title=null)`
+
+
+### attachFile 
+
+Adds a file attachment. 
+
+`attachFile($path, $alias=null, $cid=null)`
+
+### initSMTP
+
+Initializes SMTP plugin. Useful if you want to reuse the Mailer object but with a fresh SMTP adapter beneath. It's possible to change options before, i.e. to use a different smtp server.
+
+### initTracking
+
+This registers the required routes to F3
+
+### log
+
+Returns SMTP log
+
+### reset 
+
+Reset recipients if key was given, or restart whole smtp plugin.
+
+`($key=null)`
+
+### save
+
+Save the send mail to disk
+
+`save($filename)`
+
+### send
+
+Send message
+
+`send($subject [, $mock = false [, $log = 'verbose']])`
+
+log level options: `FALSE`, `TRUE`, `'verbose'`
+
+### set
+
+Set encoded header value
+
+`set($key, $val)`
+
+### setContent
+
+Set message contents by mime type
+
+`setContent($data [, $mime [, $charset=NULL ]])`
+
+I.e. for AMP mails:
+
+`$mailer->setContent($amp,'text/x-amp-html');`
+
+### setErrors
+
+Set receipient for bounce error mails
+
+`setErrors($email [, $title=null])`
+
+### setFrom
+
+Set message sender
+
+`setFrom($email [, $title=null])`
+
+
+### setHTML
+
+set message in HTML text format
+
+`setHTML($message)`
+
+### setReply
+
+set reply-to field respected by most email clients
+
+`setReply($email [, $title=null])`
+
+### setText
+
+set message in plain text format
+
+`setText($message)`
 
 ## License
 
 You are allowed to use this plugin under the terms of the GNU General Public License version 3 or later.
 
-Copyright (C) 2019 Christian Knuth [ikkez]
+Copyright (C) 2020 Christian Knuth [ikkez]
