@@ -37,7 +37,7 @@ class MailTest extends \App\Controller {
 			$mail->attachFile($ui_base.'ui/images/We_Can_Do_It_square.jpg','wecandoit.jpg');
 		}
 
-		$success = $mail->send('Testmail');
+		$success = $mail->send('Testmail öäü ß € ⭐️!');
 
 		if ($f3->exists('POST.save')) {
 			$mail->save(date('Y-m-d_H_i_').uniqid().'.eml');
