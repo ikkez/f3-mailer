@@ -153,7 +153,7 @@ class Mailer {
 	public function addBcc($email, $title=null) {
 		$this->recipients['Bcc'][$email] = $title;
 	}
-	
+
 	/**
 	 * set reply-to field respected by most email clients
 	 * @param $email
@@ -268,7 +268,7 @@ class Mailer {
 		}
 		$this->smtp->set('Subject', $this->encodeHeader($this->encode($subject)));
 		$body = '';
-		$hash=uniqid(NULL,TRUE);
+		$hash=uniqid('',TRUE);
 		$multipart = count($this->message) > 1;
 		if ($multipart)
 			$this->smtp->set('Content-Type', 'multipart/alternative; boundary="'.$hash.'"');
