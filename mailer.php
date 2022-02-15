@@ -8,12 +8,12 @@
  * compliance with the license. Any of the license terms and conditions
  * can be waived if you get permission from the copyright holder.
  *
- * Copyright (c) 2020 ~ ikkez
+ * Copyright (c) 2022 ~ ikkez
  * Christian Knuth <ikkez0n3@gmail.com>
  * https://github.com/ikkez/F3-Sugar/
  *
- * @version 1.2.2
- * @date: 14.01.2020
+ * @version 1.2.3
+ * @date: 15.02.2022
  */
 
 class Mailer {

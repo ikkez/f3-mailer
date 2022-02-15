@@ -251,4 +251,4 @@ set message in plain text format
 
 You are allowed to use this plugin under the terms of the GNU General Public License version 3 or later.
 
-Copyright (C) 2020 Christian Knuth [ikkez]
+Copyright (C) 2022 Christian Knuth [ikkez]
